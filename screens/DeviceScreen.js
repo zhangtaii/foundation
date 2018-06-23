@@ -12,17 +12,24 @@ import {
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import { ListItem } from 'react-native-elements'
+
+const list = [
+  {
+    title: 'Ceilling Lamp',
+    icon: 'lightbulb-o',
+    switched: true,
+  },
+  {
+    title: 'Decorative Light',
+    icon: 'lightbulb-o',
+    switched: false,
+  },
+]
 
 export default class DeviceScreen extends React.Component {
   static navigationOptions = {
     title: 'Device',
-    // headerRight: (
-    //   <Button
-    //     onPress={() => alert('This is a button!')}
-    //     title="+"
-    //     color="black"
-    //   />
-    // ),
 
   };
 
@@ -30,6 +37,22 @@ export default class DeviceScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+          {
+            list.map((item, i) => (
+              <ListItem
+                key={i}
+                title={item.title}
+                leftIcon={{ name: item.icon,  type:'font-awesome' }}
+                switchButton
+                hideChevron
+                switched={item.switched}
+                onSwitch={(status)=>{
+                  list[i].switched = status;
+                  this.forceUpdate();
+                }}
+              />
+            ))
+          }
 
         </ScrollView>
       </View>
