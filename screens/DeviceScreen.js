@@ -6,9 +6,10 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
   Modal,
+  Dimensions,
   Button
 } from "react-native";
 import { WebBrowser } from "expo";
@@ -17,6 +18,9 @@ import { MonoText } from "../components/StyledText";
 import { ListItem, Slider } from "react-native-elements";
 
 import { FontAwesome } from "@expo/vector-icons";
+
+SW = Dimensions.get('window').width;
+SH = Dimensions.get('window').height;
 
 const list = [
   {
@@ -37,10 +41,11 @@ export default class DeviceScreen extends React.Component {
   static navigationOptions = {
     title: "Device"
   };
-
+  currentSliderDiviceID = 1;
   state = {
     isGroupExpanded: true,
-    modalVisible: false
+    modalVisible: false,
+    brightnessLevel: 0
   };
 
   setModalVisible(visible) {
@@ -77,7 +82,9 @@ export default class DeviceScreen extends React.Component {
           {this.state.isGroupExpanded &&
             list.map((item, i) => (
               <ListItem
-                onPress={(item)=>{
+                onPress={item => {
+                  // console.warn('item' + item.deviceID);
+                  // this.currentSliderItem = item;
                   this.setModalVisible(true);
                 }}
                 key={i}
@@ -105,16 +112,62 @@ export default class DeviceScreen extends React.Component {
           visible={this.state.modalVisible}
           onRequestClose={() => {
             //alert('Modal has been closed.');
+            this.setModalVisible(false);
           }}
         >
-          <View style={{ marginTop: 22 }}>
-            <View>
+        <TouchableWithoutFeedback onPress={()=>{
+          this.setModalVisible(false);
+        }}>
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              {backgroundColor: 'rgba(0,0,0,0.4)'},
+            ]}>
+            <View
+              style={{
+                top: SH / 2,
+                position: 'absolute',
+                backgroundColor: 'rgba(255,255,255,1)',
+                width: '100%',
+                padding:5,
+                borderRadius: 2,
+                // alignItems:'center'
+              }}>
+              <Text style={{alignSelf:'center'}}>Brightness</Text>
+
               <Slider
-                value={this.state.value}
-                onValueChange={value => this.setState({ value })}
-              />
+                maximumValue={255}
+                value={this.state.brightnessLevel}
+                step={1}
+                onValueChange={value => {
+                  this.setState({ brightnessLevel: value });
+                  const requestURL = `https://agent.electricimp.com/Sz15XCQ9JCxM?vals=${
+                    this.currentSliderDiviceID
+                  },${value}`;
+                  // console.warn(requestURL);
+                  fetch(requestURL);
+                }}
+              />              
             </View>
           </View>
+        </TouchableWithoutFeedback>        
+          {/* <View style={{ marginTop: 22 }}>
+            <View>
+              <Slider
+                maximumValue={255}
+                value={this.state.brightnessLevel}
+                step={1}
+                onValueChange={value => {
+                  this.setState({ brightnessLevel: value });
+                  const requestURL = `https://agent.electricimp.com/Sz15XCQ9JCxM?vals=${
+                    this.currentSliderDiviceID
+                  },${value}`;
+                  console.warn(requestURL);
+                  fetch(requestURL);
+                }}
+              />
+            </View>
+          </View> */}
         </Modal>
       </View>
     );
