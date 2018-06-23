@@ -7,14 +7,23 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Button,
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 
-export default class HomeScreen extends React.Component {
+export default class DeviceScreen extends React.Component {
   static navigationOptions = {
     title: 'Device',
+    // headerRight: (
+    //   <Button
+    //     onPress={() => alert('This is a button!')}
+    //     title="+"
+    //     color="black"
+    //   />
+    // ),
+
   };
 
   render() {
